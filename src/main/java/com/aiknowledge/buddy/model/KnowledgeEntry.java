@@ -34,6 +34,8 @@ public class KnowledgeEntry {
     @Field("source_type")
     private String sourceType; // PULL_REQUEST, COMMIT, JIRA_TICKET, MANUAL
     
+
+    
     @Field("source_id")
     private String sourceId;
     

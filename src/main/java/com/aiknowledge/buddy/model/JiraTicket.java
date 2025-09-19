@@ -28,6 +28,7 @@ public class JiraTicket {
     @Field("user_id")
     private String userId;
     
+    
     private String summary;
     private String description;
     private String status;
