@@ -9,10 +9,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.aiknowledge.buddy.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;

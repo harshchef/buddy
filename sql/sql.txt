@@ -3,6 +3,7 @@ use Test93;
 
 SHOW TABLES;
 
+	
 
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -18,11 +19,12 @@ CREATE TABLE users (
 );
 
 
-
+DROP TABLE user_repositories;
 CREATE TABLE user_repositories (
-    user_id BIGINT,
-    repository VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    user_id BIGINT NOT NULL,
+    repository VARCHAR(255) NOT NULL,
+    PRIMARY KEY(user_id, repository),
+    FOREIGN KEY(user_id) REFERENCES users(id)
 );
 CREATE TABLE commits (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

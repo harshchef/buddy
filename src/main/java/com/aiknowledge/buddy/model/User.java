@@ -1,8 +1,7 @@
 package com.aiknowledge.buddy.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -13,9 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -28,8 +27,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "github_id", unique = true)
-    private String githubId;
+  @Column(name = "github_id", unique = true)
+    private Long githubId;
 
     @Column(name = "github_username")
     private String githubUsername;
