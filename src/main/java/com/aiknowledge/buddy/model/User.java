@@ -3,44 +3,58 @@ package com.aiknowledge.buddy.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+@Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
 public class User {
+
     @Id
-    private String id;
-    
-    @Field("github_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "github_id", unique = true)
     private String githubId;
-    
-    @Field("github_username")
+
+    @Column(name = "github_username")
     private String githubUsername;
-    
+
+    @Column(unique = true)
     private String email;
+
     private String name;
-    
-    @Field("avatar_url")
+
+    @Column(name = "avatar_url")
     private String avatarUrl;
-    
-    @Field("access_token")
+
+    @Column(name = "access_token", length = 1000)
     private String accessToken;
-    
-    @Field("refresh_token")
+
+    @Column(name = "refresh_token", length = 1000)
     private String refreshToken;
-    
-    @Field("created_at")
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Field("updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
+    @ElementCollection
+    @CollectionTable(name = "user_repositories", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "repository")
     private List<String> repositories;
 }

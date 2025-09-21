@@ -1,9 +1,7 @@
 
 package com.aiknowledge.buddy.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,45 +10,59 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "commits")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "commits")
 public class Commit {
+
     @Id
-    private String id;
-    
-    @Field("github_sha")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "github_sha")
     private String githubSha;
-    
-    @Field("user_id")
-    private String userId;
-    
+
+    @Column(name = "user_id")
+    private Long userId;
+
     private String repository;
     private String message;
-    
-    @Field("author_name")
+
+    @Column(name = "author_name")
     private String authorName;
-    
-    @Field("author_email")
+
+    @Column(name = "author_email")
     private String authorEmail;
-    
-    @Field("committed_at")
+
+    @Column(name = "committed_at")
     private LocalDateTime committedAt;
-    
-    @Field("created_at")
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Field("changed_files")
+
+    @ElementCollection
+    @CollectionTable(name = "commit_changed_files", joinColumns = @JoinColumn(name = "commit_id"))
+    @Column(name = "changed_file")
     private List<String> changedFiles;
-    
+
     private Integer additions;
     private Integer deletions;
-    
-    @Field("html_url")
+
+    @Column(name = "html_url")
     private String htmlUrl;
-    
-    @Field("pull_request_id")
+
+    @Column(name = "pull_request_id")
     private String pullRequestId;
 }

@@ -3,71 +3,87 @@ package com.aiknowledge.buddy.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-
-
+@Entity
+@Table(name = "pull_requests")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "pull_requests")
 public class PullRequest {
+
     @Id
-    private String id;
-        
-    @Field("github_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "github_id")
     private Long githubId;
-        
-    @Field("user_id")
-    private String userId;
-        
+
+    @Column(name = "user_id")
+    private Long userId;
+
     private String repository;
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private String state;
-        
-    @Field("created_at")
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-        
-    @Field("updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-        
-    @Field("merged_at")
+
+    @Column(name = "merged_at")
     private LocalDateTime mergedAt;
-        
-    @Field("author_username")
+
+    @Column(name = "author_username")
     private String authorUsername;
-        
-    @Field("base_branch")
+
+    @Column(name = "base_branch")
     private String baseBranch;
-        
-    @Field("head_branch")
+
+    @Column(name = "head_branch")
     private String headBranch;
-        
-    @Field("changed_files")
+
+    @ElementCollection
+    @CollectionTable(name = "pull_request_changed_files", joinColumns = @JoinColumn(name = "pull_request_id"))
+    @Column(name = "changed_file")
     private List<String> changedFiles;
-        
-    @Field("additions")
+
     private Integer additions;
-        
-    @Field("deletions")
     private Integer deletions;
-        
-    @Field("commits_count")
+
+    @Column(name = "commits_count")
     private Integer commitsCount;
-        
+
+    @Column(columnDefinition = "TEXT")
     private String diff;
-        
-    @Field("review_comments")
-    private List<Map<String, Object>> reviewComments;
-        
-    @Field("html_url")
+
+    @ElementCollection
+    @CollectionTable(name = "pull_request_review_comments", joinColumns = @JoinColumn(name = "pull_request_id"))
+    @Column(name = "review_comment")
+    private List<String> reviewComments; // Simplified map -> string
+
+    @Column(name = "html_url")
     private String htmlUrl;
-        
+
+    @ElementCollection
+    @CollectionTable(name = "pull_request_labels", joinColumns = @JoinColumn(name = "pull_request_id"))
+    @Column(name = "label")
     private List<String> labels;
 }

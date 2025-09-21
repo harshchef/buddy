@@ -2,9 +2,16 @@ package com.aiknowledge.buddy.model;
 
 
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,55 +20,68 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+@Entity
+@Table(name = "jira_tickets")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "jira_tickets")
 public class JiraTicket {
+
     @Id
-    private String id;
-    
-    @Field("jira_key")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "jira_key")
     private String jiraKey;
-    
-    @Field("user_id")
-    private String userId;
-    
-    
+
+    @Column(name = "user_id")
+    private Long userId;
+
     private String summary;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     private String status;
-    
-    @Field("issue_type")
+
+    @Column(name = "issue_type")
     private String issueType;
-    
+
     private String priority;
-    
-    @Field("assignee_name")
+
+    @Column(name = "assignee_name")
     private String assigneeName;
-    
-    @Field("reporter_name")
+
+    @Column(name = "reporter_name")
     private String reporterName;
-    
-    @Field("created_at")
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Field("updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    @Field("resolved_at")
+
+    @Column(name = "resolved_at")
     private LocalDateTime resolvedAt;
-    
-    @Field("jira_url")
+
+    @Column(name = "jira_url")
     private String jiraUrl;
-    
+
+    @ElementCollection
+    @CollectionTable(name = "jira_ticket_labels", joinColumns = @JoinColumn(name = "jira_ticket_id"))
+    @Column(name = "label")
     private List<String> labels;
+
+    @ElementCollection
+    @CollectionTable(name = "jira_ticket_components", joinColumns = @JoinColumn(name = "jira_ticket_id"))
+    @Column(name = "component")
     private List<String> components;
-    
-    @Field("story_points")
+
+    @Column(name = "story_points")
     private Integer storyPoints;
-    
-    @Field("linked_pull_requests")
+
+    @ElementCollection
+    @CollectionTable(name = "jira_ticket_linked_pull_requests", joinColumns = @JoinColumn(name = "jira_ticket_id"))
+    @Column(name = "linked_pull_request")
     private List<String> linkedPullRequests;
 }
