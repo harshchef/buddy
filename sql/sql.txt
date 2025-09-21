@@ -1,0 +1,241 @@
+create database Test93;
+use Test93;
+
+SHOW TABLES;
+
+
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    github_id VARCHAR(255) UNIQUE,
+    github_username VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    name VARCHAR(255),
+    avatar_url VARCHAR(255),
+    access_token VARCHAR(1000),
+    refresh_token VARCHAR(1000),
+    created_at DATETIME,
+    updated_at DATETIME
+);
+
+
+
+CREATE TABLE user_repositories (
+    user_id BIGINT,
+    repository VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE TABLE commits (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    github_sha VARCHAR(255),
+    user_id BIGINT,
+    repository VARCHAR(255),
+    message TEXT,
+    author_name VARCHAR(255),
+    author_email VARCHAR(255),
+    committed_at DATETIME,
+    created_at DATETIME,
+    additions INT,
+    deletions INT,
+    html_url VARCHAR(500),
+    pull_request_id VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE commit_changed_files (
+    commit_id BIGINT,
+    changed_file VARCHAR(255),
+    FOREIGN KEY (commit_id) REFERENCES commits(id)
+);
+
+CREATE TABLE documentation (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    repository VARCHAR(255),
+    title VARCHAR(255),
+    content TEXT,
+    doc_type VARCHAR(100),
+    created_at DATETIME,
+    updated_at DATETIME,
+    version VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE documentation_source_pull_requests (
+    documentation_id BIGINT,
+    source_pull_request VARCHAR(255),
+    FOREIGN KEY (documentation_id) REFERENCES documentation(id)
+);
+
+CREATE TABLE documentation_embedding_vector (
+    documentation_id BIGINT,
+    vector_value DOUBLE,
+    FOREIGN KEY (documentation_id) REFERENCES documentation(id)
+);
+
+CREATE TABLE documentation_tags (
+    documentation_id BIGINT,
+    tag VARCHAR(255),
+    FOREIGN KEY (documentation_id) REFERENCES documentation(id)
+);
+
+CREATE TABLE jira_tickets (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    jira_key VARCHAR(255),
+    user_id BIGINT,
+    summary VARCHAR(255),
+    description TEXT,
+    status VARCHAR(50),
+    issue_type VARCHAR(50),
+    priority VARCHAR(50),
+    assignee_name VARCHAR(255),
+    reporter_name VARCHAR(255),
+    created_at DATETIME,
+    updated_at DATETIME,
+    resolved_at DATETIME,
+    jira_url VARCHAR(500),
+    story_points INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE jira_ticket_labels (
+    jira_ticket_id BIGINT,
+    label VARCHAR(255),
+    FOREIGN KEY (jira_ticket_id) REFERENCES jira_tickets(id)
+);
+
+CREATE TABLE jira_ticket_components (
+    jira_ticket_id BIGINT,
+    component VARCHAR(255),
+    FOREIGN KEY (jira_ticket_id) REFERENCES jira_tickets(id)
+);
+
+CREATE TABLE jira_ticket_linked_pull_requests (
+    jira_ticket_id BIGINT,
+    linked_pull_request VARCHAR(255),
+    FOREIGN KEY (jira_ticket_id) REFERENCES jira_tickets(id)
+);
+
+CREATE TABLE knowledge_entries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    title VARCHAR(255),
+    content TEXT,
+    entry_type VARCHAR(50),
+    source_type VARCHAR(50),
+    source_id VARCHAR(255),
+    created_at DATETIME,
+    updated_at DATETIME,
+    repository VARCHAR(255),
+    confidence_score DOUBLE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE knowledge_entry_tags (
+    knowledge_entry_id BIGINT,
+    tag VARCHAR(255),
+    FOREIGN KEY (knowledge_entry_id) REFERENCES knowledge_entries(id)
+);
+
+CREATE TABLE knowledge_entry_embedding_vector (
+    knowledge_entry_id BIGINT,
+    vector_value DOUBLE,
+    FOREIGN KEY (knowledge_entry_id) REFERENCES knowledge_entries(id)
+);
+
+CREATE TABLE knowledge_entry_related_entries (
+    knowledge_entry_id BIGINT,
+    related_entry VARCHAR(255),
+    FOREIGN KEY (knowledge_entry_id) REFERENCES knowledge_entries(id)
+);
+CREATE TABLE pull_requests (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    github_id BIGINT,
+    user_id BIGINT,
+    repository VARCHAR(255),
+    title VARCHAR(255),
+    description TEXT,
+    state VARCHAR(50),
+    created_at DATETIME,
+    updated_at DATETIME,
+    merged_at DATETIME,
+    author_username VARCHAR(255),
+    base_branch VARCHAR(255),
+    head_branch VARCHAR(255),
+    additions INT,
+    deletions INT,
+    commits_count INT,
+    diff TEXT,
+    html_url VARCHAR(500),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE pull_request_changed_files (
+    pull_request_id BIGINT,
+    changed_file VARCHAR(255),
+    FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id)
+);
+
+CREATE TABLE pull_request_review_comments (
+    pull_request_id BIGINT,
+    review_comment TEXT,
+    FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id)
+);
+
+CREATE TABLE pull_request_labels (
+    pull_request_id BIGINT,
+    label VARCHAR(255),
+    FOREIGN KEY (pull_request_id) REFERENCES pull_requests(id)
+);
+
+CREATE TABLE summaries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    pull_request_id BIGINT,
+    commit_id BIGINT,
+    type VARCHAR(50),
+    high_level_summary TEXT,
+    created_at DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE summary_major_features (
+    summary_id BIGINT,
+    major_feature VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_bug_fixes (
+    summary_id BIGINT,
+    bug_fix VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_design_decisions (
+    summary_id BIGINT,
+    design_decision VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_lessons_learned (
+    summary_id BIGINT,
+    lesson_learned VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_best_practices (
+    summary_id BIGINT,
+    best_practice VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_technical_debt (
+    summary_id BIGINT,
+    technical_debt VARCHAR(255),
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
+
+CREATE TABLE summary_embedding_vector (
+    summary_id BIGINT,
+    vector_value DOUBLE,
+    FOREIGN KEY (summary_id) REFERENCES summaries(id)
+);
