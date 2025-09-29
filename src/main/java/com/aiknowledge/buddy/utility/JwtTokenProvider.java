@@ -11,7 +11,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256); // secure random 256-bit key
+    // private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256); // secure random 256-bit key
+    private static final String SECRET = "replace-with-a-very-long-secret-key-for-jwt-signing-1234567890";
+    private static final SecretKey secretKey     = Keys.hmacShaKeyFor(SECRET.getBytes());
     private final long validityInMilliseconds = 3600_000; // 1 hour
 
     public String generateToken(Long userId) {
